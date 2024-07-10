@@ -10,6 +10,8 @@ import re
 from nltk.tokenize.toktok import ToktokTokenizer
 import logging
 import os
+import joblib
+import io
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -20,29 +22,20 @@ models = {}
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-
 def load_and_preprocess_data(db_file):
     logging.debug("Connecting to the database...")
     logging.debug(f"Database file path: {db_file}")
-    
-    # Verify if the file exists
+
     if not os.path.exists(db_file):
         logging.error(f"Database file does not exist: {db_file}")
         raise FileNotFoundError(f"Database file does not exist: {db_file}")
-    
-    # Connect to SQLite database
+
     conn = sqlite3.connect(db_file)
-    
-    # Load data from the database
-    logging.debug("Loading data from the database...")
     query = "SELECT * FROM imdb_reviews"
     imdb_data = pd.read_sql_query(query, conn)
-    
-    # Close the connection
     conn.close()
     logging.debug("Data loaded from the database.")
 
-    # Preprocess data
     logging.debug("Starting preprocessing...")
     imdb_data = preprocess_data(imdb_data)
     train_reviews, train_sentiments, test_reviews, test_sentiments = split_data(imdb_data)
@@ -59,7 +52,6 @@ def preprocess_data(imdb_data):
     imdb_data['sentiment'] = imdb_data['sentiment'].apply(encode_sentiment)
     logging.debug("Sentiments distribution after encoding: {}".format(imdb_data['sentiment'].value_counts()))
     return imdb_data
-
 
 def denoise_text(text):
     text = strip_html(text)
@@ -101,7 +93,6 @@ def encode_sentiment(sentiment):
     else:
         raise ValueError(f"Unknown sentiment value: {sentiment}")
 
-
 def split_data(imdb_data):
     logging.debug("Splitting data into training and testing sets...")
     train_reviews = imdb_data.review[:40000]
@@ -112,19 +103,18 @@ def split_data(imdb_data):
     logging.debug("Testing sentiments distribution after splitting: {}".format(test_sentiments.value_counts()))
     return train_reviews, train_sentiments, test_reviews, test_sentiments
 
-
 def vectorize_data(train_reviews, test_reviews):
     logging.debug("Vectorizing data...")
     all_reviews = pd.concat([train_reviews, test_reviews])
     cv = CountVectorizer(min_df=1, max_df=1.0, binary=False, ngram_range=(1, 3))
     tv = TfidfVectorizer(min_df=1, max_df=1.0, use_idf=True, ngram_range=(1, 3))
-    
+
     cv.fit(all_reviews)
     tv.fit(all_reviews)
-    
+
     cv_train_reviews = cv.transform(train_reviews)
     cv_test_reviews = cv.transform(test_reviews)
-    
+
     tv_train_reviews = tv.transform(train_reviews)
     tv_test_reviews = tv.transform(test_reviews)
     logging.debug("Vectorization completed.")
@@ -135,63 +125,62 @@ def label_sentiments(sentiments):
     sentiment_data = lb.fit_transform(sentiments)
     return sentiment_data
 
-def train_models(train_reviews, train_sentiments):
+def train_and_save_models(train_reviews, train_sentiments, db_file):
     logging.debug("Starting model training...")
-    logging.debug(f"Training sentiments distribution before vectorization: {train_sentiments.value_counts()}")
     cv_train_reviews, _, tv_train_reviews, _, cv, tv = vectorize_data(train_reviews, train_reviews)
     lr = LogisticRegression(penalty='l2', max_iter=500, C=1, random_state=42)
     lr_bow = lr.fit(cv_train_reviews, train_sentiments)
     lr_tfidf = lr.fit(tv_train_reviews, train_sentiments)
-    global models
-    models = {'lr_bow': lr_bow, 'lr_tfidf': lr_tfidf, 'cv': cv, 'tv': tv}
-    logging.debug("Model training completed.")
-    return models
+    
+    # Save models to the database
+    save_model_to_db(lr_bow, 'lr_bow', db_file)
+    save_model_to_db(lr_tfidf, 'lr_tfidf', db_file)
+    save_model_to_db(cv, 'cv', db_file)
+    save_model_to_db(tv, 'tv', db_file)
+    
+    logging.debug("Model training and saving completed.")
 
+def save_model_to_db(model, model_name, db_file):
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
+    
+    # Create table if it doesn't exist
+    cursor.execute('''CREATE TABLE IF NOT EXISTS models
+                      (name TEXT PRIMARY KEY, model BLOB)''')
+    
+    # Serialize the model
+    model_blob = io.BytesIO()
+    joblib.dump(model, model_blob)
+    model_blob = model_blob.getvalue()
+    
+    # Insert or replace the model in the database
+    cursor.execute("INSERT OR REPLACE INTO models (name, model) VALUES (?, ?)",
+                   (model_name, model_blob))
+    
+    conn.commit()
+    conn.close()
 
-def evaluate_models(models, test_reviews, test_sentiments):
-    logging.debug("Evaluating models...")
-    cv = models['cv']
-    tv = models['tv']
+def load_model_from_db(model_name, db_file):
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
     
-    cv_test_reviews = cv.transform(test_reviews)
-    tv_test_reviews = tv.transform(test_reviews)
+    cursor.execute("SELECT model FROM models WHERE name=?", (model_name,))
+    model_blob = cursor.fetchone()[0]
     
-    lr_bow = models['lr_bow']
-    lr_tfidf = models['lr_tfidf']
+    model = joblib.load(io.BytesIO(model_blob))
     
-    lr_bow_predict = lr_bow.predict(cv_test_reviews)
-    lr_tfidf_predict = lr_tfidf.predict(tv_test_reviews)
-    
-    lr_bow_score = accuracy_score(test_sentiments, lr_bow_predict)
-    lr_tfidf_score = accuracy_score(test_sentiments, lr_tfidf_predict)
-    
-    lr_bow_report = classification_report(test_sentiments, lr_bow_predict, target_names=['Positive', 'Negative'])
-    lr_tfidf_report = classification_report(test_sentiments, lr_tfidf_predict, target_names=['Positive', 'Negative'])
-    
-    cm_bow = confusion_matrix(test_sentiments, lr_bow_predict, labels=[1, 0])
-    cm_tfidf = confusion_matrix(test_sentiments, lr_tfidf_predict, labels=[1, 0])
-    
-    results = {
-        "lr_bow_score": lr_bow_score,
-        "lr_tfidf_score": lr_tfidf_score,
-        "lr_bow_report": lr_bow_report,
-        "lr_tfidf_report": lr_tfidf_report,
-        "cm_bow": cm_bow.tolist(),
-        "cm_tfidf": cm_tfidf.tolist()
-    }
-    logging.debug("Model evaluation completed.")
-    return results
+    conn.close()
+    return model
 
-def predict_sentiment(text, model_type='lr_tfidf'):
-    cv = models['cv']
-    tv = models['tv']
-    if model_type == 'lr_bow':
-        vectorizer = cv
-    else:
-        vectorizer = tv
-    vectorized_text = vectorizer.transform([text])
-    model = models.get(model_type)
-    if model:
-        prediction = model.predict(vectorized_text)
-        return 'Positive' if prediction[0] == 1 else 'Negative'
-    return 'Model not found'
+def predict_sentiment(text, model_type='lr_tfidf', db_file='models.db'):
+    # Load vectorizer and model from the database
+    vectorizer = load_model_from_db('cv' if model_type == 'lr_bow' else 'tv', db_file)
+    model = load_model_from_db(model_type, db_file)
+    
+    # Preprocess and vectorize the input text
+    preprocessed_text = remove_stopwords(simple_stemmer(remove_special_characters(denoise_text(text))))
+    vectorized_text = vectorizer.transform([preprocessed_text])
+    
+    # Make prediction
+    prediction = model.predict(vectorized_text)
+    return 'Positive' if prediction[0] == 1 else 'Negative'

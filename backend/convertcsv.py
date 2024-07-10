@@ -16,10 +16,3 @@ def csv_to_sqlite(csv_file, db_file, table_name):
     conn.commit()
     conn.close()
     print(f"Database {db_file} created successfully with table {table_name}.")
-
-if __name__ == "__main__":
-    csv_file = 'IMDB Dataset.csv'  # Replace with your CSV file path
-    db_file = 'database.db'  # Replace with your desired database file name
-    table_name = 'imdb_reviews'  # Replace with your desired table name
-
-    csv_to_sqlite(csv_file, db_file, table_name)
