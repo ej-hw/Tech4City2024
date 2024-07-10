@@ -1,0 +1,16 @@
+streamlit
+torch
+torchvision
+matplotlib
+numpy
+Pillow
+streamlit_lottie==0.0.2
+requests==2.24.0
+protobuf
+watchdog==4.0.1
+tensorflow-intel
+urllib3
+Flask
+Flask-SQLAlchemy
+opencv-python
+scikit-image
