@@ -1,6 +1,0 @@
-flask
-flask-cors
-flasgger
-opencv-python
-numpy
-sqlite3
