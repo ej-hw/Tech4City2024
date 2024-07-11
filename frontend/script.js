@@ -22,7 +22,7 @@ async function predictSentiment() {
         }
     } catch (error) {
         console.error('Error:', error);
-        document.getElementById('result').innerText = 'Error predicting sentiment.';
+        document.getElementById('result').innerText = 'Please Train the Model first';
     }
 }
 
