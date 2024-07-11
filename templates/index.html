@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- char encoding -->
+    <meta charset="UTF-8">
+    <!-- render to device -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title -->
+    <title>CityTech Innovators Object Detection Web App</title>
+    <!-- our style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>CityTech Innovators Object Detection Web App</h1>
+        <!-- upload image -->
+        <input type="file" id="fileInput" accept="image/*">
+        <!-- load indic-->
+        <div id="loadingIndicator" style="display:none;">
+            <!-- load gif -->
+            <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading...">
+        </div>
+        <div id="imageContainer"></div>
+        <div id="predictionContainer" class="prediction"></div>
+    </div>
+
+    <!-- our script -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
