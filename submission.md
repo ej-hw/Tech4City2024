@@ -29,7 +29,7 @@ Build an AI web application for Sentiment Analysis.
     ```
 
 - Access the application in your browser:
-    Navigate to http://localhost:8000
+    Navigate to http://localhost:8000 or http://127.0.0.1:8000/
 
 - The following is what you should see
 
@@ -39,10 +39,10 @@ Build an AI web application for Sentiment Analysis.
     Note, if you do not retrain the model, and click <em>Predict Sentiment </em>, you will see an error. 
 
     ![terminal screenshot!](/terminal_screenshot.png)
-- Make a prediction by keying in a model review after training is complete
-    Note that you have to wait about 10 to 15 seconds after you click <em> Predict Sentiment </em>.
 
-- Watch the demo video [here](https://youtu.be/jl6s8ynE0bE)
+- Make a prediction by keying in a model review after training is complete
+
+- Watch the demo video [here](https://www.youtube.com/watch?v=ks0htbD0fmY)
 
 
 
@@ -50,3 +50,4 @@ Build an AI web application for Sentiment Analysis.
 # Additional Information
 - The application uses NLTK for text processing and Scikit-Learn for machine learning.
 - The model is trained on 50,000 IMDB movie reviews.
+- The model is saved and cached in memory. 
