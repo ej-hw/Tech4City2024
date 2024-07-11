@@ -33,9 +33,18 @@ def train():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    if not models or 'lr_tfidf' not in models:
+        # Load models from DB if not cached in memory
+        models['lr_bow'] = load_model_from_db('lr_bow', models_db_file)
+        models['lr_tfidf'] = load_model_from_db('lr_tfidf', models_db_file)
+        vectorizers['cv'] = load_model_from_db('cv', models_db_file)
+        vectorizers['tv'] = load_model_from_db('tv', models_db_file)
+        if None in (models['lr_bow'], models['lr_tfidf'], vectorizers['cv'], vectorizers['tv']):
+            return jsonify({'error': 'Models are not trained yet.'}), 500
+    
     data = request.json
     review = data.get('review')
-    sentiment = predict_sentiment(review, model_type='lr_tfidf', db_file=models_db_file)
+    sentiment = predict_sentiment(review, model_type='lr_tfidf')
     return jsonify({'sentiment': sentiment})
 
 if __name__ == '__main__':
