@@ -21,14 +21,28 @@ Build an AI web application for Sentiment Analysis.
 - Clone the repository:
 - Build the Docker image:
     ```
-    docker build -t sentiment-analysis-app .
+    docker build -t application .
     ```
 - Run the Docker container:
     ``` 
-    docker run -p 5000:5000 sentiment-analysis-app
+    docker run -p 8000:8000 application
     ```
+
 - Access the application in your browser:
-    Navigate to http://localhost:5000
+    Navigate to http://localhost:8000
+
+- The following is what you should see
+
+    ![GUI!](/gui_screenshot.png)
+
+- Train the model (by clicking retrain the model)
+    Note, if you do not retrain the model, and click <em>Predict Sentiment </em>, you will see an error. 
+
+    ![terminal screenshot!](/terminal_screenshot.png)
+- Make a prediction by keying in a model review after training is complete
+    Note that you have to wait about 10 to 15 seconds after you click <em> Predict Sentiment </em>.
+
+- Watch the demo video [here](https://youtu.be/jl6s8ynE0bE)
 
 
 
