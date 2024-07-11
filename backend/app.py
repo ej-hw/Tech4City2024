@@ -29,7 +29,7 @@ def train():
 
     # Train and save models
     train_and_save_models(train_reviews, train_sentiments, models_db_file)
-    return "Training Done"
+    return jsonify({'result': 'success'})
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -40,7 +40,7 @@ def predict():
         vectorizers['cv'] = load_model_from_db('cv', models_db_file)
         vectorizers['tv'] = load_model_from_db('tv', models_db_file)
         if None in (models['lr_bow'], models['lr_tfidf'], vectorizers['cv'], vectorizers['tv']):
-            return jsonify({'error': 'Models are not trained yet.'}), 500
+            return jsonify({'error': 'Please train the model first.'}), 500
     
     data = request.json
     review = data.get('review')

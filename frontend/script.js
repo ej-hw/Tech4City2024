@@ -16,7 +16,7 @@ async function predictSentiment() {
 
         const result = await response.json();
         if (result.error) {
-            document.getElementById('result').innerText = 'Error predicting sentiment.';
+            document.getElementById('result').innerText = result.error;
         } else {
             document.getElementById('result').innerText = `Predicted Sentiment: ${result.sentiment}`;
         }
