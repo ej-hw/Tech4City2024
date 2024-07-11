@@ -4,7 +4,6 @@ import nltk
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import LabelBinarizer
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from bs4 import BeautifulSoup
 import re
 from nltk.tokenize.toktok import ToktokTokenizer
@@ -18,6 +17,7 @@ nltk.download('punkt')
 
 # Initialize global models dictionary
 models = {}
+vectorizers = {}
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -140,6 +140,13 @@ def train_and_save_models(train_reviews, train_sentiments, db_file):
     
     logging.debug("Model training and saving completed.")
 
+    # Cache models in memory
+    models['lr_bow'] = lr_bow
+    models['lr_tfidf'] = lr_tfidf
+    vectorizers['cv'] = cv
+    vectorizers['tv'] = tv
+    logging.debug("Models cached in memory.")
+
 def save_model_to_db(model, model_name, db_file):
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
@@ -165,19 +172,20 @@ def load_model_from_db(model_name, db_file):
     cursor = conn.cursor()
     
     cursor.execute("SELECT model FROM models WHERE name=?", (model_name,))
-    model_blob = cursor.fetchone()[0]
+    result = cursor.fetchone()
+    if result is None:
+        return None
+    model_blob = result[0]
     
     model = joblib.load(io.BytesIO(model_blob))
     
     conn.close()
     return model
 
-def predict_sentiment(text, model_type='lr_tfidf', db_file='models.db'):
-    # Load vectorizer and model from the database
-    vectorizer = load_model_from_db('cv' if model_type == 'lr_bow' else 'tv', db_file)
-    model = load_model_from_db(model_type, db_file)
-    
+def predict_sentiment(text, model_type='lr_tfidf'):
     # Preprocess and vectorize the input text
+    vectorizer = vectorizers['cv' if model_type == 'lr_bow' else 'tv']
+    model = models[model_type]
     preprocessed_text = remove_stopwords(simple_stemmer(remove_special_characters(denoise_text(text))))
     vectorized_text = vectorizer.transform([preprocessed_text])
     
