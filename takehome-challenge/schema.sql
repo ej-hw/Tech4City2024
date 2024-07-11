@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS sentiments;
+
+CREATE TABLE sentiments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    text TEXT NOT NULL,
+    sentiment TEXT NOT NULL,
+    polarity REAL NOT NULL,
+    subjectivity REAL NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
