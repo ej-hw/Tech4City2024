@@ -44,12 +44,12 @@
 
         .negative {
             background-color: #f44336; /* Red */
-            color: black;
+            color: white;
         }
 
         .neutral {
             background-color: #e0e0e0; /* Red */
-            color: white;
+            color: black;
         }
 
         .content {
@@ -109,8 +109,8 @@
             </form>
         </div>
 
-        {% if (news_data) and sentiment %}
-            <h2>News Articles:</h2>
+        {% if news_data and sentiment %}
+            <h2>News Articles: </h2>
             <ul id="news-list">
                 {% for article in news_data %}
                     <li>
@@ -129,8 +129,12 @@
                 {% endfor %}
             </ul>
 
-        {% elif (news_data) %}
+        {% elif news_data %}
             <h2>News Articles:</h2>
+            <form method="POST" action="/analyze_sentiment">
+                <input type="hidden" name="metadata" value="{{ news_data }}">
+                <button type="submit">Analyze Sentiment</button>
+            </form>
             <ul id="news-list">
                 {% for article in news_data %}
                     <li>
@@ -150,11 +154,11 @@
 
         sentimentResults.forEach(result => {
             const sentiment = result.dataset.sentiment;
-            if (sentiment === 'POS') {
+            if (sentiment === 'POSITIVE') {
                 result.classList.add('positive');
-            } else if (sentiment === 'NEG') {
+            } else if (sentiment === 'NEGATIVE') {
                 result.classList.add('negative');
-            } else if (sentiment === 'NEU') {
+            } else if (sentiment === 'NEUTRAL') {
                 result.classList.add('neutral');
             }
             console.log(`Sentiment: ${sentiment}, Result Element:`, result);

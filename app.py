@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from icecream import ic 
 
 from werkzeug import Response
 from dotenv import load_dotenv
@@ -12,8 +13,10 @@ from transformers import pipeline, BertweetTokenizer
 
 load_dotenv()  # take environment variables
 app = Flask(__name__)
+
 tokenizer = BertweetTokenizer.from_pretrained('finiteautomata/bertweet-base-sentiment-analysis')
 classifier = pipeline("sentiment-analysis", model="finiteautomata/bertweet-base-sentiment-analysis", truncation=True, max_length=128)
+sentiment_mapping = {"POS": "POSITIVE", "NEG": "NEGATIVE", "NEU": "NEUTRAL"}
 
 def get_db():
     if 'db' not in g:
@@ -75,12 +78,13 @@ def fetch_news() -> Response | str:
 
     db = get_db()
     cursor = db.cursor()
-
+    
     for article_data in metadata:
         raw_content = get_article(article_data['url'])
         processed_content = raw_content.replace('\n', ' ')
         sentiment_result = classifier(processed_content)[0]
-        article_data['sentiment'] = sentiment_result['label']
+        sentiment = sentiment_mapping.get(sentiment_result['label'], sentiment_result['label'])
+        article_data['sentiment'] = sentiment
         article_data['content'] = processed_content
 
         cursor.execute('''
@@ -90,6 +94,14 @@ def fetch_news() -> Response | str:
         db.commit()
 
     return render_template("index.html", news_data=metadata, sentiment=False)
+
+@app.route("/analyze_sentiment", methods=["GET", "POST"])
+def analyze_sentiment() -> Response | str:
+    if request.method == "POST":
+        metadata = request.form.get("metadata")
+    if metadata:
+        metadata = eval(metadata)
+    return render_template("index.html", news_data=metadata, sentiment=True)
 
 if __name__ == "__main__":
     app.run(debug=True)
