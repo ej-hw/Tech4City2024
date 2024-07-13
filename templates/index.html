@@ -7,7 +7,7 @@
             font-family: sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f4f4f9;
+            background-color: #fff;
         }
 
         h1, h2 {
@@ -44,6 +44,11 @@
 
         .negative {
             background-color: #f44336; /* Red */
+            color: black;
+        }
+
+        .neutral {
+            background-color: #e0e0e0; /* Red */
             color: white;
         }
 
@@ -71,25 +76,40 @@
             background-color: #fff;
             margin-bottom: 20px;
         }
+
+        .form-container {
+            text-align: center; /* Center align the form content */
+        }
+
+        .form-container form {
+            max-width: 500px; /* Limit form width for readability */
+            margin: auto; /* Center align the form within its container */
+            padding: 20px;
+        }
+
+        .form-container button[type="submit"] {
+            margin-top: 10px; /* Add margin before the submit button */
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>News Sentiment Analysis</h1>
 
-        <form method="POST" onsubmit="return validateForm()">
-            <label for="topic">Topic:</label>
-            <input type="text" id="userInput" name="topic" placeholder="News topic" required>
+        <div class="form-container">
+            <form method="POST" action="/" onsubmit="return validateForm()">
+                <label for="topic">Topic:</label>
+                <input type="text" id="userInput" name="topic" placeholder="News topic" required>
+                <label for="current_date">Date:</label>
+                <input type="date" name="current_date" id="current_date" required max="{{ max_date }}">
 
-            <label for="current_date">Date (yyyy-mm-dd):</label>
-            <input type="date" name="current_date" id="current_date" required max="{{ max_date }}">
+                <button type ="submit">Fetch News</button>
+ 
+                <p id="error-message" class="error"></p>
+            </form>
+        </div>
 
-            <button type="submit">Fetch News</button>
-
-            <p id="error-message" class="error"></p>
-        </form>
-
-        {% if news_data %}
+        {% if (news_data) and sentiment %}
             <h2>News Articles:</h2>
             <ul id="news-list">
                 {% for article in news_data %}
@@ -101,6 +121,20 @@
                                 {{ article.sentiment }}
                             </span>
                         </div>
+                        <div class="content">
+                            <p>{{ article.content }}</p>
+                        </div>
+                        <p>Published: {{ article.publishedAt }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% elif (news_data) %}
+            <h2>News Articles:</h2>
+            <ul id="news-list">
+                {% for article in news_data %}
+                    <li>
+                        <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
                         <div class="content">
                             <p>{{ article.content }}</p>
                         </div>

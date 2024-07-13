@@ -89,7 +89,7 @@ def fetch_news() -> Response | str:
         ''', (article_data['title'], article_data['url'], article_data['sentiment'], article_data['publishedAt']))
         db.commit()
 
-    return render_template("index.html", news_data=metadata)
+    return render_template("index.html", news_data=metadata, sentiment=False)
 
 if __name__ == "__main__":
     app.run(debug=True)
