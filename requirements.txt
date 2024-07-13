@@ -2,5 +2,5 @@ transformers
 flask
 python-dotenv
 sqlite3
-bs4
+beautifulsoup4
 icecream

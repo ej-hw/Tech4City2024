@@ -1,98 +1,95 @@
-# Tech4City2024 - Entry Coding Challenge
-![Tech4CityBanner](https://github.com/ej-hw/Tech4City2024/blob/main/Tech4City2024Banner.png?raw=true)
+Flask News Sentiment Analysis App
+=================================
 
-[Fork](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) now to participate!
+This is a Flask web application that fetches news articles based on a given topic and date, analyzes the sentiment of the articles using a pretrained BERTweet model, and stores the results in a SQLite database.
 
-## About
+Features
+--------
 
-The annual Huawei Tech4City Competition presents a great opportunity for you to embark on a digital journey towards creating a more inclusive and sustainable Singapore. This competition will equip you with the tools you need to build and improve your prototypes, and turn your creative ideas and solutions into reality.
+*   Fetch news articles from around the world using the [NewsAPI](https://newsapi.org).
+*   Scrape article content using BeautifulSoup.
+*   Analyze article sentiment using the BERTweet model for sentiment analysis.
+*   Store article metadata and sentiment in a SQLite database.
 
-Find out more about the Huawei Tech4City 2024 competition on the [official website](http://tech4city.sg/2024)
+Setup Instructions
+------------------
 
-## Entry Challenge:
-Create an AI web application that allows user to input data, perform AI processing on the input, and displays the result. The application should also store past inputs and results in a lightweight local database, which can be viewed later on the frontend. Application needs to be runable using a 4vCPU, 16 GB Ram without GPU environment. 
+### Prerequisites
 
-Participants can choose one of the following AI use cases:
-1. Sentiment Analysis
-2. Image Classification
-3. Object Detection
+*   Python 3.12 or higher
+*   A NewsAPI key. Sign up at [NewsAPI](https://newsapi.org/register) to get your API key.
 
-## Submission Requirements:
-The challenge is expected to be performed using HTML, CSS, python and vanilla javascript with the basis to screen participants with fundamental knowledge of creating application using common coding languages and frameworks.  
+### Installation
 
-### Repository Setup:
-Create a repository with the following structure:
-```
-/frontend
-  - index.html        # Create a form with appropriate input fields (text area for sentiment analysis, file input for image classification or object detection) and a submit button.
-  - styles.css        # Style the form and results display area.
-  - script.js         # Handle form submission and send input data to the backend API.
-                      # Display the AI result returned from the backend.
-                      # Fetch and display past inputs and results from the backend.
+    
+    git clone https://github.com/GeorgePPP/Tech4City2024
+    cd Tech4City2024
+    pip install -r requirements.txt
+    
 
-/backend
-  - app.py            # main file for backend code for endpoints
-                      # POST /analyze: Accepts user input, performs AI processing, stores the input and result in the database, and returns the result.
-                      # GET /results: Retrieves all stored inputs and their results from the database.
-  - model.py          # Implement a function to process the user input (e.g., classify sentiment, classify image, detect objects) using any AI/ML library (e.g., Huggingface, TensorFlow, PyTorch).
-  - database.db       # Local lightweight database such as sqlite, duckdb, etc
-  - requirements.txt  # File for python app dependencies
+### Environment Variables
 
-Dockerfile            # Provide a Dockerfile to containerize the application.
-                      # The application should be accessible on port 8000.
-                      
-submission.md         # Provide your team name and other necessary information for the repository as deemed necessary
-```
+Create a `.env` file in the root directory of the project and add your NewsAPI key:
 
-### Evaluation Criteria:
-#### Frontend:
-- User interface design and usability.
-- Intuitive data submission and result display.
-- Ability to review historical data submission and result
+    
+    NEWS_API_TOKEN=your_news_api_key
+    
 
-#### Backend:
-- Proper implementation of API endpoints and adherence to REST principles.
-- Effective data storage and retrieval using local database.
-- Input validation and error handling.
-- Database schema design and usage.
-- API endpoints documentation using OpenAPI (Swagger) or equivalent.
-  
-#### AI Element:
-- Use of appropriate techniques for AI processing.
-- Proper integration & interfacing between the AI component, backend and frontend.
-- Efficiency & effectiveness of the AI model
+Running the Application
+-----------------------
 
-#### Docker:
-- Correct setup and configuration of the Dockerfile.
-- Successful execution of building and running the Docker container.
-- Ability access application on port 8000 after running Docker container.
+    
+    python app.py
+    
 
-#### Overall Functionality:
-- Completeness of the application and fulfillment of all specified requirements.
-- Stability and absence of bugs or crashes.
-- Innovation and creativity in the implementation.
-- Code structure and readability
+By default, the app runs on [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-## Submission
-You are required to submit your entry coding challenge artifacts (code, datasets, documents) as a [fork](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) to this repository. A submission form will also be made available for submission so that participants can include the link to the fork in the submission form.
+Usage
+-----
 
-After creating your own fork, clone your repository:
-```
-git clone git@github.com:<your-github-username>/Tech4City2024
-```
+### Home Page
 
-Change to the directory:
-```
-cd Tech4City2024
-```
+On the home page, enter a topic and a date to search for news articles.
 
-Set upstream:
-```
-git remote add upstream git@github.com:ej-hw/Tech4City2024
-```
+### Fetch News
 
-...and start Hacking!!
+After submitting the topic and date, the app will fetch news articles from NewsAPI, scrape their content, analyze their sentiment, and display the results.
 
-Once you are ready to submit, create a pull request from your fork to us and include the link to your fork in your submission form.
+Code Overview
+-------------
 
-*Please remember that your code will be publicly available, open-sourced licesed and free for the internet to use. Please ensure that you don't commit any sensitive information!*
+### File Structure
+
+    
+    Tech4City2024/
+    ├── templates/
+    │   └── index.html
+    ├── utils/
+    │   ├── news_scraping.py
+    │   └── validation.py
+    ├── .env
+    ├── app.py
+    ├── database.db
+    ├── requirements.txt
+    └── README.html
+    
+
+### Main Files
+
+*   `app.py`: The main Flask application file containing route definitions and core logic.
+*   `utils/news_scraping.py`: Contains functions `get_metadata` and `get_article` for fetching news metadata and scraping article content, respectively.
+*   `utils/validation.py`: Contains the `validate_date` function to ensure the date format is correct.
+*   `templates/index.html`: The HTML template for rendering the home page and displaying results.
+
+### Dependencies
+
+Dependencies are listed in the `requirements.txt` file:
+
+    
+    flask
+    python-dotenv
+    sqlite3
+    transformers
+    icecream
+    werkzeug
+    beautifulsoup4
