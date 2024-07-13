@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .sentiment-container {
+            margin-top: 10px;
+        }
+
+        .sentiment-result {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .positive {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        .negative {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+
+        .content {
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>News Sentiment Analysis</h1>
+
+        <form method="POST" onsubmit="return validateForm()">
+            <label for="topic">Topic:</label>
+            <input type="text" id="userInput" name="topic" placeholder="News topic" required>
+
+            <label for="current_date">Date (yyyy-mm-dd):</label>
+            <input type="date" name="current_date" id="current_date" required max="{{ max_date }}">
+
+            <button type="submit">Fetch News</button>
+
+            <p id="error-message" class="error"></p>
+        </form>
+
+        {% if news_data %}
+            <h2>News Articles:</h2>
+            <ul id="news-list">
+                {% for article in news_data %}
+                    <li>
+                        <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
+                        <div class="sentiment-container">
+                            <span class="sentiment-label">Sentiment:</span>
+                            <span class="sentiment-result" data-sentiment="{{ article.sentiment }}">
+                                {{ article.sentiment }}
+                            </span>
+                        </div>
+                        <div class="content">
+                            <p>{{ article.content }}</p>
+                        </div>
+                        <p>Published: {{ article.publishedAt }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <script>
+        const sentimentResults = document.querySelectorAll('.sentiment-result');
+
+        sentimentResults.forEach(result => {
+            const sentiment = result.dataset.sentiment;
+            if (sentiment === 'POS') {
+                result.classList.add('positive');
+            } else if (sentiment === 'NEG') {
+                result.classList.add('negative');
+            } else if (sentiment === 'NEU') {
+                result.classList.add('neutral');
+            }
+            console.log(`Sentiment: ${sentiment}, Result Element:`, result);
+        });
+
+        function validateForm() {
+            const dateInput = document.getElementById('current_date').value;
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Matches yyyy-mm-dd
+            const errorMessage = document.getElementById('error-message');
+
+            if (!dateRegex.test(dateInput)) {
+                errorMessage.textContent = 'Invalid date format. Please use yyyy-mm-dd.';
+                return false;
+            } else {
+                errorMessage.textContent = '';
+                return true;
+            }
+        }
+    </script>
+</body>
+</html>
