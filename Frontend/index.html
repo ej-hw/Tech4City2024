@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Sentiment Analysis</title>
+</head>
+<body>
+    <div id="app">
+        <h1>Sentiment Analysis</h1>
+        <form id="sentiment-form">
+            <textarea id="text-input" rows="4" cols="50" placeholder="Enter text here..."></textarea><br>
+            <button type="submit">Analyze</button>
+        </form>
+        <div id="result">
+            <label id="sentiment-label"></label>
+        </div>
+        <div id="feedback" style="display: none;">
+            <h2>Is the sentiment analysis correct?</h2>
+            <form id="feedback-form">
+                <input type="radio" id="feedback-correct" name="feedback" value="correct">
+                <label for="feedback-correct">Yes</label><br>
+                <input type="radio" id="feedback-incorrect" name="feedback" value="incorrect">
+                <label for="feedback-incorrect">No</label><br>
+                <div id="correct-sentiment" style="display: none;">
+                    <h3>Please provide the correct sentiment:</h3>
+                    <input type="radio" id="feedback-pos" name="correct-feedback" value="1">
+                    <label for="feedback-pos">Positive</label><br>
+                    <input type="radio" id="feedback-neu" name="correct-feedback" value="0">
+                    <label for="feedback-neu">Neutral</label><br>
+                    <input type="radio" id="feedback-neg" name="correct-feedback" value="-1">
+                    <label for="feedback-neg">Negative</label><br>
+                </div>
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </div>
+        <div id="history">
+            <h2>History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Text</th>
+                        <th>Sentiment</th>
+                        <th>Feedback</th>
+                        <th>Correct</th>
+                        <th>Submit Feedback</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
