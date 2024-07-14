@@ -1,6 +1,7 @@
 transformers
 flask
 python-dotenv
-sqlite3
 beautifulsoup4
 icecream
+tf-keras
+tensorflow
