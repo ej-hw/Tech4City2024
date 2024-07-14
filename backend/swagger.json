@@ -8,7 +8,101 @@
     "/api/analyze": {
       "post": {
         "description": "Runs sentiment analyses on a given message and generates a reply, if necessary.",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Payload containing the message to analyze with optional topic and seed text.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "The main message to analyze, which is required.",
+                  "example": "Hello! I love music too"
+                },
+                "topic": {
+                  "type": "string",
+                  "description": "The topic of the conversation (optional).",
+                  "example": "music"
+                },
+                "seed": {
+                  "type": "string",
+                  "description": "A seed passage related to the topic to help guide the analysis (optional).",
+                  "example": "Sure, let's talk about music! Music is an art form that involves sound and rhythm to create an emotional or sensory experience for the listener..."
+                }
+              },
+              "required": ["message"]
+            }
+          }
+        ],
         "responses": {
+          "200": {
+            "description": "Analysis completed successfully with optional reply.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "Sun, 14 Jul 2024 13:37:33 GMT"
+                },
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Hello! I love music too"
+                },
+                "reply": {
+                  "type": "string",
+                  "example": "That's great! Music is a universal language that can bring people"
+                },
+                "results": {
+                  "type": "object",
+                  "properties": {
+                    "sentiments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "major": {
+                            "type": "string",
+                            "example": "joy"
+                          },
+                          "score": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.9719480872154236
+                          },
+                          "sentiment": {
+                            "type": "string",
+                            "example": "emotion"
+                          }
+                        }
+                      }
+                    },
+                    "should_reply": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                },
+                "topic": {
+                  "type": "string",
+                  "example": "music"
+                },
+                "seed": {
+                  "type": "string",
+                  "example": "Sure, let's talk about music! Music is an art form that involves sound and rhythm to create an emotional or sensory experience for the listener..."
+                }
+              }
+            }
+          },
           "400": {
             "description": "Bad request if message is not provided."
           }
@@ -17,17 +111,123 @@
     },
     "/api/seed": {
       "get": {
-        "description": "Generates a passage of text of a random topic as a conversation starter."
+        "description": "Generates a passage of text on a random topic as a conversation starter.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully generated a random text passage.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "example": "Sure, let's talk about music! Music is an art form that involves sound and rhythm to create an emotional or sensory experience for the listener. It can be composed by musicians who play instruments like guitars, pianos, drums, etc., or sung by singers. Music has been around since ancient times and it still exists today in different forms of music like pop, rock, classical, jazz, hip hop, country, folk, electronic, rap, and many more.\n\nMusic can also be used to convey emotions, tell stories, express feelings, inspire people, and even heal wounds. It's a universal language that transcends cultural barriers and allows us to connect with each other on a deeper level. Music is not just about sound; it's also about the way we perceive and interpret sounds.\n\nMusic can also be used in different genres like pop music, rock music, classical music, hip hop, country, folk, electronic, jazz, rap, etc. Each genre has its own unique characteristics and styles of music that are specific to them. For example, rock music is known for its energetic energy, while classical music is known for its formal structure and orchestral sound."
+                },
+                "topic": {
+                  "type": "string",
+                  "example": "music"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/results": {
       "get": {
-        "description": "Retrieves all past analysis results."
+        "description": "Retrieves all past analysis results.",
+        "parameters": [],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "A list of all analysis results.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "Sun, 14 Jul 2024 13:37:33 GMT"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Hello! I love music too"
+                  },
+                  "reply": {
+                    "type": "string",
+                    "example": "That's great! Music is a universal language that can bring people..."
+                  },
+                  "results": {
+                    "type": "object",
+                    "properties": {
+                      "sentiments": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "major": {
+                              "type": "string",
+                              "example": "joy"
+                            },
+                            "score": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 0.9719480872154236
+                            },
+                            "sentiment": {
+                              "type": "string",
+                              "example": "emotion"
+                            }
+                          }
+                        }
+                      },
+                      "should_reply": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    }
+                  },
+                  "seed": {
+                    "type": "string",
+                    "example": "Sure, let's talk about music! Music is an art form that involves sound and rhythm to create an emotional or sensory experience for the listener..."
+                  },
+                  "topic": {
+                    "type": "string",
+                    "example": "music"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/results/{id}": {
       "delete": {
-        "description": "Deletes a specific analysis result."
+        "description": "Deletes a specific analysis result.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the analysis result to delete.",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analysis result deleted successfully."
+          },
+          "404": {
+            "description": "Analysis result not found."
+          }
+        }
       }
     }
   }
