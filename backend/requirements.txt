@@ -21,6 +21,7 @@ regex==2024.5.15
 requests==2.32.3
 safetensors==0.4.3
 SQLAlchemy==2.0.31
+flask-swagger-ui==4.11.1
 sympy==1.13.0
 tokenizers==0.19.1
 # torch==2.3.1+cpu

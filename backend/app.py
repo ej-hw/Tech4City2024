@@ -2,13 +2,19 @@ import model
 import random
 from database import save_analysis, get_analyses, delete_analysis
 from flask import Flask, request, Response
+from flask_swagger_ui import get_swaggerui_blueprint
 
+SWAGGER_URL = "/api/docs"
+API_URL = "/swagger.json"
 
 app = Flask(
     __name__,
     static_url_path='',
     static_folder='static',
 )
+
+swagger_ui_blueprint = get_swaggerui_blueprint(SWAGGER_URL, API_URL)
+app.register_blueprint(swagger_ui_blueprint)
 
 
 @app.post("/api/analyze")
