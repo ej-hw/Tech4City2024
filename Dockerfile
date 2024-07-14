@@ -18,5 +18,5 @@ ENV HF_HOME=/app
 COPY ./backend .
 COPY ./frontend static
 COPY ./backend/swagger.json ./static/swagger.json
-EXPOSE 8080
+EXPOSE 8000
 CMD ["python", "app.py"]
