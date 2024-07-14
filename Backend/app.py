@@ -5,7 +5,8 @@ import sqlite3
 
 app = Flask(__name__)
 CORS(app)
-
+with open('api_key.txt', 'w') as f: 
+    f.write('hello')
 # Initialize SQLite database
 def init_db():
     conn = sqlite3.connect('database.db')
