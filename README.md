@@ -44,6 +44,13 @@ Running the Application
 
 By default, the app runs on [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
+Using Docker
+-----------------------
+
+    
+    docker compose up
+    
+
 Usage
 -----
 
