@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: url('https://wallpapers.com/images/hd/minimalist-zoom-background-office-77oveytkzggaqgbt.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #f0f0f0;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://wallpapers.com/images/hd/minimalist-zoom-background-office-77oveytkzggaqgbt.jpg') no-repeat center center fixed;
+            background-size: cover;
+            filter: blur(3px);
+            z-index: -1;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            color: black;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 1.5rem;
+            text-align: center;
+            color: black;
+            margin-bottom: 20px;
+        }
+        p.instruction {
+            text-align: center;
+            font-size: 16px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sentiment-container {
+            margin-top: 10px;
+        }
+
+        .sentiment-result {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .positive {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        .negative {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+
+        .neutral {
+            background-color: #e0e0e0; /* Grey */
+            color: black;
+        }
+
+        .content {
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .form-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container form {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="date"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container button[type="submit"] {
+            margin-top: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-container button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .analyze-button {
+            display: block;
+            width: 100%;
+            max-width: 250px;
+            margin: 20px auto;
+            padding: 15px 20px;
+            font-size: 14px;
+            border: black;
+            border-width: 0.25px;
+            border-style: solid;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .analyze-button:hover {
+            background-color: #0056b3;
+        }
+
+        .display-records-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .display-records-button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            .container, .form-container form {
+                padding: 10px;
+            }
+
+            .form-container input[type="text"],
+            .form-container input[type="date"] {
+                width: 100%;
+            }
+
+            .analyze-button {
+                width: 90%;
+            }
+
+            .display-records-button {
+                width: 90%;
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>News Sentiment Analysis</h1>
+        <p class="instruction">Please enter news topic and the date it roughly occurred.</p>
+
+        <div class="form-container">
+            <form method="POST" action="/" onsubmit="return validateForm()">
+                <label for="topic">Topic:</label>
+                <input type="text" id="userInput" name="topic" placeholder="News topic" required>
+                <label for="current_date">Date:</label>
+                <input type="date" name="current_date" id="current_date" required>
+
+                <button type="submit">Fetch News</button>
+
+                <p id="error-message" class="error"></p>
+            </form>
+        </div>
+
+        {% if news_data and sentiment %}
+            <h2>News Articles:</h2>
+            <ul id="news-list">
+                {% for article in news_data %}
+                    <li>
+                        <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
+                        <div class="sentiment-container">
+                            <span class="sentiment-label">Sentiment:</span>
+                            <span class="sentiment-result" data-sentiment="{{ article.sentiment }}">
+                                {{ article.sentiment }}
+                            </span>
+                        </div>
+                        <div class="content">
+                            <p>{{ article.content }}</p>
+                        </div>
+                        <p>Published: {{ article.publishedAt }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+
+        {% elif news_data %}
+            <h2>News Articles:</h2>
+            <form method="POST" action="/analyze_sentiment">
+                <input type="hidden" name="metadata" value="{{ news_data }}">
+                <button type="submit" class="analyze-button">Analyze Sentiment</button>
+            </form>
+            <ul id="news-list">
+                {% for article in news_data %}
+                    <li>
+                        <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
+                        <div class="content">
+                            <p>{{ article.content }}</p>
+                        </div>
+                        <p>Published: {{ article.publishedAt }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <button class="display-records-button" onclick="window.location.href='display_records'">Display Records</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('current_date').setAttribute('max', today);
+        });
+
+        const sentimentResults = document.querySelectorAll('.sentiment-result');
+
+        sentimentResults.forEach(result => {
+            const sentiment = result.dataset.sentiment;
+            if (sentiment === 'POSITIVE') {
+                result.classList.add('positive');
+            } else if (sentiment === 'NEGATIVE') {
+                result.classList.add('negative');
+            } else if (sentiment === 'NEUTRAL') {
+                result.classList.add('neutral');
+            }
+            console.log(`Sentiment: ${sentiment}, Result Element:`, result);
+        });
+
+        function validateForm() {
+            const dateInput = document.getElementById('current_date').value;
+            const today = new Date().toISOString().split('T')[0];
+            if (dateInput > today) {
+                document.getElementById('error-message').textContent = 'Date cannot be in the future.';
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

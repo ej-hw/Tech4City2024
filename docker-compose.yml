@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      NEWS_API_TOKEN: "2f171ec4cf714f03844528984d7d7e4f"
+    volumes:
+      - .:/app
