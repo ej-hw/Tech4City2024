@@ -19,7 +19,7 @@ class Analysis(Base):
     created_at = mapped_column(DateTime, nullable=False, default=func.now())
 
 
-engine = create_engine('sqlite:///database.db')
+engine = create_engine('sqlite:///data/database.db')
 Base.metadata.create_all(engine)
 
 session = Session(engine)

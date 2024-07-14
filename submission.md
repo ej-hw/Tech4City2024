@@ -18,5 +18,5 @@ Our project, Cikgo, will eventually develop a feature called Autoreply, which au
 
 ```sh
 docker build -t judy .
-docker run -it --rm -v ./hub:/app/hub -p 8080:8080 judy
+docker run -it --rm -v ./hub:/app/hub -v ./data:/app/data -p 8080:8080 judy
 ```
