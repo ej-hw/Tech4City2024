@@ -47,7 +47,7 @@ The interface is split into 3 left-to-right sections: Chat Interface, Analysis R
 1. **Frontend**: The frontend is built using vanilla HTML, CSS, and JavaScript, files in `frontend/`.
 2. **Backend**: The API backend is built using Flask, a Python web framework, with endpoints specified in `backend/app.py`.
 3. **Database**: The database uses SQLite to store the the historical messages and analyses, and the sqlalchemy python library as the Object Relational Mapper (ORM) in `backend/database.py`.
-4. **AI/ML Models**: The application uses specially curated pre-trained models selected from the Hugging Face Transformers library for Natural Language Understanding and Generation, Emotion Detection, Offensive Content Filtering, Question Detection, and Mental State Classification.
+4. **AI/ML Models**: The application uses specially curated pre-trained models selected from the Hugging Face Transformers library for Natural Language Understanding and Generation, Emotion Detection, Offensive Content Filtering, Question Detection, and Mental State Classification. The models are specified in `backend/model.py`.
 
 # AI/ML Features
 
