@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide The Dark - Object Detection</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Guide The Dark <span class="subtitle">Object Detection</span></h1>
+        
+        <div class="card">
+            <h2>Discover </h2>
+            <h3>How is this project done?</h3>
+            <p class="project-explanation">
+                This project combines powerful backend object detection with a user-friendly frontend interface:
+            </p>
+            <ul class="project-details">
+                <li><strong>Backend:</strong> Utilizes YOLO (You Only Look Once), an object detection system. We're using pre-trained YOLO models and datasets for accurate and efficient object recognition.</li>
+                <li><strong>Frontend:</strong> Built with HTML, CSS, and JavaScript to create an intuitive user interface for image upload and result display.</li>
+                <li><strong>Integration:</strong> Flask, a Python web framework, connects the frontend to the backend, enabling seamless image processing and result retrieval.</li>
+            </ul>
+            <p class="project-explanation">
+                This architecture allows for quick and accurate object detection in uploaded images, showcasing the power of modern AI techniques in an accessible web application.
+            </p>
+        </div>
+
+        <h2>Object Detection Demonstration</h2>
+        <p>This tool demonstrates the object detection capability found within the Seeing Beyond API. It is capable of detecting objects accurately, and approximating brands or species. Upload a picture to try it online.</p>
+
+        <div class="upload-section">
+            <button id="uploadBtn" class="primary-btn">+ Upload Image(s)</button>
+        </div>
+
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>PHOTO</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" class="upload-prompt">
+                        <img src="upload-icon.png" alt="Upload Icon">
+                        <p>Click to add a photo to Seeing Beyond</p>
+                        <a href="#" id="uploadLink">Click to Upload an Image</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="enlargedView" class="enlarged-view"></div>
+
+        <h2>Past Detections</h2>
+        <div id="pastDetections" class="past-detections"></div>
+        
+    </div>
+
+    <input type="file" id="fileInput" style="display: none;" accept="image/*">
+    <script src="script.js"></script>
+</body>
+</html>
