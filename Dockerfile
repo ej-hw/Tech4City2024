@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir --user torch==2.3.1+cpu --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir --user torch==2.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 COPY ./backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --user -r requirements.txt
 
