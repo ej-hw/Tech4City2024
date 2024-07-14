@@ -7,7 +7,7 @@ from flask import Flask, request, Response
 app = Flask(
     __name__,
     static_url_path='',
-    static_folder='frontend',
+    static_folder='static',
 )
 
 
@@ -70,4 +70,4 @@ def static_proxy(path):
 
 
 if __name__ == "__main__":
-    app.run(port=80)
+    app.run(port=8080, debug=True)

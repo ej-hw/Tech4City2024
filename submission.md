@@ -13,3 +13,10 @@ Our project, Cikgo, will eventually develop a feature called Autoreply, which au
 
 > [!NOTE]
 > For this proof-of-concept, we use open-source NLP models that run locally. Analysis results may not be accurate. However, analyses' quality can be improved with better models and/or heuristics. In this project, this aspect is left as an abstraction. We selected the best NLP models we could find and focused on building a minimum viable product.
+
+# Usage Instructions
+
+```sh
+docker build -t judy .
+docker run -it --rm -v ./hub:/app/hub -p 8080:8080 judy
+```

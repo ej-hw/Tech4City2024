@@ -1,17 +1,22 @@
-FROM python:3.11.9-slim AS base
+FROM python:3.11.9-slim
 
 WORKDIR /app
-COPY ./backend/ .
 ENV CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS"
 ENV FORCE_CMAKE=1
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends build-essential cmake libopenblas-dev libgomp1
-RUN pip install --user -r requirements.txt
-RUN apt-get purge -y --auto-remove cmake
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential cmake libopenblas-dev libgomp1 && \
+    pip install --no-cache-dir llama-cpp-python==0.2.82 && \
+    apt-get purge -y --auto-remove cmake && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir --user torch==2.3.1+cpu --index-url https://download.pytorch.org/whl/cpu
+COPY ./backend/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --user -r requirements.txt
 
 ENV HF_HOME=/app
-COPY ./frontend frontend
-EXPOSE 80
+COPY ./backend .
+COPY ./frontend static
+COPY ./backend/swagger.json ./static/swagger.json
+EXPOSE 8080
 CMD ["python", "app.py"]
