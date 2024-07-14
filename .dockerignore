@@ -1,0 +1,9 @@
+Dockerfile
+.dockerignore
+.gitignore
+__pycache__/
+.venv
+.env
+*.md
+hub/
+data/
