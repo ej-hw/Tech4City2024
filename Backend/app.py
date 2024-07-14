@@ -2,11 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from model import get_sentiment_value
 import sqlite3
+import nltk
+
+# Ensure the VADER lexicon is downloaded
+nltk.download('vader_lexicon')
 
 app = Flask(__name__)
 CORS(app)
-with open('api_key.txt', 'w') as f: 
-    f.write('hello')
+
 # Initialize SQLite database
 def init_db():
     conn = sqlite3.connect('database.db')
@@ -36,7 +39,7 @@ def analyze_text():
 def get_results():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    c.execute("SELECT * FROM results ORDER BY id")
+    c.execute("SELECT * FROM results ORDER BY id DESC")
     results = c.fetchall()
     conn.close()
 

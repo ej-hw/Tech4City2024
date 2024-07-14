@@ -2,7 +2,7 @@ document.getElementById('sentiment-form').addEventListener('submit', async funct
     event.preventDefault();
     const textInput = document.getElementById('text-input').value;
 
-    const response = await fetch('http://backend/analyze', {
+    const response = await fetch('http://localhost:8000/analyze', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ document.getElementById('sentiment-form').addEventListener('submit', async funct
 });
 
 async function fetchResults() {
-    const response = await fetch('http://backend/results');
+    const response = await fetch('http://localhost:8000/results');
     const results = await response.json();
 
     let historyHtml = '';
@@ -89,7 +89,7 @@ document.getElementById('feedback-form').addEventListener('submit', async functi
         feedbackData.correct_feedback = correctFeedbackValue;
     }
 
-    const response = await fetch('http://backend:8000/feedback', {
+    const response = await fetch('http://localhost:8000/feedback', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ async function submitFeedback(event, id) {
         feedbackData.correct_feedback = correctFeedbackValue;
     }
 
-    const response = await fetch('http://backend/feedback', {
+    const response = await fetch('http://localhost:8000/feedback', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
