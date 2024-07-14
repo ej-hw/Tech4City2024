@@ -28,7 +28,7 @@ App will be available at `http://localhost:8080`.
 # Interface
 
 The interface is split into 3 left-to-right sections: Chat Interface, Analysis Results, and History.  
-<img src="images/interface.png" alt="Full Interface" title="Full Interface" width="300"/>
+![Full Interface](images/interface.png)
 
 1. **Chat Interface**: Provides a simple chat interface for users to interact with the chatbot.  
    Users are able to directly start typing a message, or choose to generate a conversational starter first.  
