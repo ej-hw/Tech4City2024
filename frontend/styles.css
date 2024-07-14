@@ -1,0 +1,61 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    margin-top: 20px;
+    color: #343a40;
+    text-align: center;
+}
+
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input[type="file"] {
+    margin-bottom: 15px;
+}
+
+input[type="submit"] {
+    width: 50%;
+}
+
+p {
+    font-size: 1.2em;
+    color: #495057;
+}
+/* Center the image container */
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Ensure the image is centered within the container */
+.image-container img {
+    max-width: 50%;
+    height: auto;
+}
+
+/* Style the prediction text */
+.prediction-text {
+    margin-top: 20px; /* Adjust this value as needed */
+    font-size: 1.2em;
+    color: #495057;
+    text-align: center;
+}
+
+.d-block {
+    display: block;
+}
+
+.d-none {
+    display: none;
+}
