@@ -19,8 +19,8 @@ class LLM:
         # https://huggingface.co/Qwen/Qwen2-1.5B-Instruct-GGUF
         # limited to small model since running on CPU, Qwen2-7B will have 128k context tokens
         self.model = Llama.from_pretrained(
-            repo_id="Qwen/Qwen2-1.5B-Instruct-GGUF",
-            filename="qwen2-1_5b-instruct-q2_k.gguf",
+            repo_id="Qwen/Qwen2-0.5B-Instruct-GGUF",
+            filename="qwen2-0_5b-instruct-q4_k_m.gguf",
             verbose=False
         )
 
