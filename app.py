@@ -1,17 +1,16 @@
 import os
 from datetime import datetime, timedelta
-from icecream import ic 
-
+from icecream import ic
 from werkzeug import Response
 from dotenv import load_dotenv
-
 import sqlite3
 from utils.news_scraping import get_article, get_metadata
 from utils.validation import validate_date
 from flask import Flask, render_template, request, redirect, g
 from transformers import pipeline, BertweetTokenizer
+from utils.extract import FetchRecords
 
-load_dotenv()  # take environment variables
+load_dotenv() 
 app = Flask(__name__)
 
 tokenizer = BertweetTokenizer.from_pretrained('finiteautomata/bertweet-base-sentiment-analysis')
@@ -102,6 +101,11 @@ def analyze_sentiment() -> Response | str:
     if metadata:
         metadata = eval(metadata)
     return render_template("index.html", news_data=metadata, sentiment=True)
+
+@app.route("/display_records", methods=["GET"])
+def display_records():
+    records = FetchRecords() 
+    return render_template("display_records.html", records=records)
 
 if __name__ == "__main__":
     app.run(debug=True)
